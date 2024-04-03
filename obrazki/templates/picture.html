@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Picture Page</title>
+</head>
+<body>
+    <a href="/">Powrót do głównej</a>
+
+    <h1>{{ picture.name }}</h1>
+
+    <svg width="{{picture.size_x}}" height="{{picture.size_y}}">
+        {% for rectangle in picture.rectangles.all %}
+            <rect x="{{ rectangle.x }}" y="{{ rectangle.y }}" width="{{ rectangle.width }}" height="{{ rectangle.height }}" fill="{{ rectangle.color }}" />
+        {% endfor %}
+    </svg>
+    <br>
+
+    <h2>Dane</h2>
+    <div>Wymiary: {{ picture.size_x }} x {{ picture.size_y }}</div>
+    <br>
+
+    {% if user.is_authenticated and request.user in picture.editors.all %}
+    
+        <a href="/pic_clear/{{ picture.id }}">Wyczyść prostokąty</a>
+
+        <form action="/pic_add_rect/{{ picture.id }}/" method="post">
+            {% csrf_token %}
+            <h2>Dodaj prostkąt</h2>
+            <label for="x">X:</label>
+            <input type="number" name="x" id="x" required>
+            <br>
+            <br>
+            <label for="y">Y:</label>
+            <input type="number" name="y" id="y" required>
+            <br>
+            <br>
+            <label for="width">Width:</label>
+            <input type="number" name="width" id="width" required>
+            <br>
+            <br>
+            <label for="height">Height:</label>
+            <input type="number" name="height" id="height" required>
+            <br>
+            <br>
+            <label for="color">Color:</label>
+            <input type="color" name="color" id="color" required>
+            <br>
+            <br>
+            <button type="submit">Add Rectangle</button>
+        </form>
+
+    {% endif %}
+</body>
+</html>

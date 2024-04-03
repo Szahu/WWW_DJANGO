@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Obrazki</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Obrazki</h1>
+
+    {% if user.is_authenticated %}
+        <button onclick="window.location.href='/logout'">Logout</button>
+    {% else %}
+        <a href="/login">Login</a>
+    {% endif %}
+
+    <ul>
+    {% for picture, miniature in pictures %}
+        <div>
+            {{ miniature | safe }}
+        </div>
+        <li>
+            <a href="/pic/{{picture.id}}">{{ picture.name }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <nav aria-label="...">
+        <ul class="pagination">
+
+            {% for page_button in page_buttons %}                
+
+            {% if page_button == page_num %}
+            <li class="page-item active">
+                <a class="page-link" href="#">{{ page_button }}<span class="sr-only">(current)</span></a>
+            </li>
+            {% else %}
+                <button class="page-link" onclick="
+                    url_params = {{request.GET.dict}}
+                    url_params.page_num = {{page_button}}
+                    console.log(url_params)
+                    window.location.href = '?'+jQuery.param(url_params)">
+                    {{ page_button }}</button>
+            {% endif %}
+
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <div class="d-flex">
+        <button class="page-link" onclick="
+            url_params = {{request.GET.dict}}
+            url_params.sort = 'asc'
+            window.location.href = '?'+jQuery.param(url_params)">Sort Ascending</button>
+        <button class="page-link" onclick="
+            url_params = {{request.GET.dict}}
+            url_params.sort = 'desc'
+            window.location.href = '?'+jQuery.param(url_params)">Sort Descending</button>
+    </div>
+
+    <div class="d-flex">
+        <input type="text" id="inputField" class="form-control mr-2 w-25">
+        <button onclick="addValue()" class="btn btn-primary mr-2">Add</button>
+        <button onclick="
+            url_params = {{request.GET.dict}}
+            url_params.tags = get_tags()
+            window.location.href = '?'+jQuery.param(url_params)
+        "
+        class="btn btn-primary">Filter</button>
+    </div>
+
+    <ul id="valueList" class="mt-3 list-group w-25"></ul>
+
+    <script>
+        function addValue() {
+            var input = document.getElementById("inputField");
+            var value = input.value;
+            
+            if (value !== "") {
+                
+                var removeButton = document.createElement("button");
+                removeButton.className = "btn btn-danger mt-3";
+                removeButton.type = 'text'
+                removeButton.innerHTML = value;
+                removeButton.id = value;
+
+                removeButton.onclick = function() {
+                    var itemToRemove = document.getElementById(removeButton.id);
+                    itemToRemove.remove();
+                };
+                                
+                var valueList = document.getElementById("valueList");
+                valueList.appendChild(removeButton);
+                
+                input.value = "";
+            }
+        }
+
+        function get_tags() {
+            const ul = document.getElementById('valueList');
+            const items = ul.getElementsByTagName('button');
+            const tags = Array.from(items).map(item => item.innerHTML);
+            return tags.join(",")
+        }
+    </script>
+
+</body>
+</html>
