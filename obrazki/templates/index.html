@@ -6,26 +6,26 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Obrazki</h1>
+<div class="d-flex flex-column justify-content-center m-3">
+    <h1 class="mx-auto">Obrazki</h1>
 
     {% if user.is_authenticated %}
-        <button onclick="window.location.href='/logout'">Logout</button>
+        <button class="btn-primary w-25 mx-auto" onclick="window.location.href='/logout'">Logout</button>
     {% else %}
-        <a href="/login">Login</a>
+        <button class="btn-primary w-25 mx-auto" onclick="window.location.href='/login'">Login</button>
     {% endif %}
 
-    <ul>
+    <div class="d-flex flex-column mx-auto">
     {% for picture, miniature in pictures %}
-        <div>
+        <div class="p-2">
+        <a href="/pic/{{picture.id}}">
             {{ miniature | safe }}
+        </a>
         </div>
-        <li>
-            <a href="/pic/{{picture.id}}">{{ picture.name }}</a>
-        </li>
     {% endfor %}
-    </ul>
+    </div>
 
-    <nav aria-label="...">
+    <nav aria-label="..." class="mx-auto">
         <ul class="pagination">
 
             {% for page_button in page_buttons %}                
@@ -47,7 +47,7 @@
         </ul>
     </nav>
 
-    <div class="d-flex">
+    <div class="d-flex mx-auto my-2">
         <button class="page-link" onclick="
             url_params = {{request.GET.dict}}
             url_params.sort = 'asc'
@@ -58,8 +58,8 @@
             window.location.href = '?'+jQuery.param(url_params)">Sort Descending</button>
     </div>
 
-    <div class="d-flex">
-        <input type="text" id="inputField" class="form-control mr-2 w-25">
+    <div class="d-flex mx-auto">
+        <input type="text" id="inputField" class="form-control mr-2">
         <button onclick="addValue()" class="btn btn-primary mr-2">Add</button>
         <button onclick="
             url_params = {{request.GET.dict}}
@@ -69,7 +69,7 @@
         class="btn btn-primary">Filter</button>
     </div>
 
-    <ul id="valueList" class="mt-3 list-group w-25"></ul>
+    <ul id="valueList" class="mt-3 list-group w-25 mx-auto"></ul>
 
     <script>
         function addValue() {
@@ -104,5 +104,6 @@
         }
     </script>
 
+</div>
 </body>
 </html>
