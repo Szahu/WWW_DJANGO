@@ -8,6 +8,7 @@ import random
 class Command(BaseCommand):
     help = 'Adds a random picture'
 
+
     def handle(self, *args, **options):
         width = random.randint(100, 1000)
         height = random.randint(100, 1000)
